@@ -1,0 +1,65 @@
+from bigchaindb_driver import BigchainDB
+
+bdb = BigchainDB('http://localhost:9984/api/v1')
+
+bicycle = {
+    'data': {
+        'bicycle': {
+            'serial_number': 'abcd1234',
+            'manufacturer': 'bkfab',
+        },
+    },
+
+}
+metadata = {'planet': 'earth'}
+
+from bigchaindb_driver.crypto import generate_keypair
+
+alice, bob = generate_keypair(), generate_keypair()
+prepared_creation_tx = bdb.transactions.prepare(
+    operation='CREATE',
+    owners_before=alice.verifying_key,
+    asset=bicycle,
+    metadata=metadata,
+)
+fulfilled_creation_tx = bdb.transactions.fulfill(
+    prepared_creation_tx, private_keys=alice.signing_key)
+
+sent_creation_tx = bdb.transactions.send(fulfilled_creation_tx)
+txid = fulfilled_creation_tx['id']
+
+trials = 0
+
+{"transaction": {"asset": {"id": "deb0ce79-a74b-486c-b52e-51ab0225c736"}, "fulfillments": [
+    {"input": {"cid": 0, "txid": "3ddc903a658bab11e410a307bb19a1c356c57bbd710b55d063de978017b93114"}, "fid": 0,
+     "fulfillment": "cf:4:rukB3RY3Hw6YwFOpcePQoqerySWtZyPBUeNSHuUwqkleIfAJ4MCjQxxi2_VFeJUIRHoeTycWCg8Ijv_8xlxztKdZ9nRSqi1OzwZ6VK30J--WpF6PorRKTJxB8C6swgAA",
+     "owners_before": ["Cmn1i9CSsNFvvDtFWfK6uvDgbKodvJ39h5qhnxaD23Yt"]}], "operation": "TRANSFER",
+                 "metadata": {"data": {"planet": "earth"}, "id": "1562d3aa-b9b4-4b04-8c13-81f766f75dc3"},
+                 "conditions": [{"owners_after": ["DAkFCTUUBVFXaTH11ZAwLxUvbyBTm6bdrXtoqmm7HYih"], "condition": {
+                     "details": {"signature": None, "public_key": "DAkFCTUUBVFXaTH11ZAwLxUvbyBTm6bdrXtoqmm7HYih",
+                                 "type_id": 4, "type": "fulfillment", "bitmask": 32},
+                     "uri": "cc:4:20:tMteEAeG_gPqZzDhjIO2nrL9RoRgp_qS02rHI-1S8C4:96"}, "cid": 0, "amount": 1}]},
+ "id": "6f2534bb93353ed367e5a7bfcdd396750f97e122988f70f2479bfee7decea2a5", "version": 1}
+{"transaction": {"asset": {"id": "af217b4c-568d-43de-84c9-7f881cff0a1f"}, "fulfillments": [
+    {"input": {"cid": 0, "txid": "60bd16f6eb57194a306af415a6ba31325a1a01d77004c09c60da82f4e71d8e6c"}, "fid": 0,
+     "fulfillment": "cf:4:qZO7wn8HFOvlo0KsVySjfX31-6q1FZdWxghWW3nhRfpiM9IuWquYTVjmPv2ieL-KCqaoowqmUQstvrqpoCl_1fYqJchUoSmpKFhFqOn1nwdNQ1W6bG9MVEysgXUP7qsJ",
+     "owners_before": ["CQxZKA9yyei6HM3qzjFHSC1A5KmYuLjL9hsUmTZN27Yd"]}], "operation": "TRANSFER",
+                 "metadata": {"data": {"planet": "earth"}, "id": "48342518-0cb9-409c-a859-a2ac4c968bb9"},
+                 "conditions": [{"owners_after": ["CL8P1bDRXd3pWhYz1w9L4aB44SKaSAch4hB4qZYu2FNo"], "condition": {
+                     "details": {"signature": None, "public_key": "CL8P1bDRXd3pWhYz1w9L4aB44SKaSAch4hB4qZYu2FNo",
+                                 "type_id": 4, "type": "fulfillment", "bitmask": 32},
+                     "uri": "cc:4:20:qFbvgbzGsQdf6d4CEi-0HEU84IS5K6lchxPM9ozR-7A:96"}, "cid": 0, "amount": 1},
+                                {"owners_after": ["CQxZKA9yyei6HM3qzjFHSC1A5KmYuLjL9hsUmTZN27Yd"], "condition": {
+                                    "details": {"signature": None,
+                                                "public_key": "CQxZKA9yyei6HM3qzjFHSC1A5KmYuLjL9hsUmTZN27Yd",
+                                                "type_id": 4, "type": "fulfillment", "bitmask": 32},
+                                    "uri": "cc:4:20:qZO7wn8HFOvlo0KsVySjfX31-6q1FZdWxghWW3nhRfo:96"}, "cid": 1,
+                                 "amount": 1}]},
+ "id": "36c85acb005bd092ae250420a27219cadeaa0a5f803a1b44dd77c69b381311ac", "version": 1}
+
+# while bdb.transactions.status(txid).get('status') != 'valid' :
+#   trials += 1
+
+
+print(txid)
+print(trials)

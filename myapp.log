@@ -1,0 +1,2 @@
+Sat, 07 Jan 2017 03:40:55 produce.py[line:28] INFO produce some material:0dafd66c6526d2188dc82eac5260070cc814a6de7ba1a43e2fcf3fe7e5f39b4f
+Sat, 07 Jan 2017 03:40:55 _internal.py[line:87] INFO 127.0.0.1 - - [07/Jan/2017 03:40:55] "POST /task/produce HTTP/1.1" 201 -
